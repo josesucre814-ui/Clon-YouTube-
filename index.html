@@ -2,67 +2,47 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#ffffff">
-
-    <title>YouTube</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi YouTube Pro</title>
     <style>
-        /* Estilo de la Pantalla de Inicio (Splash Screen) */
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000; }
+        /* Contenedor del video/web */
+        #app-container { width: 100%; height: 100%; border: none; }
+        
+        /* Estilo para tu futuro botón flotante de descarga */
+        .btn-descarga {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ff0000;
+            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #ffffff; /* Fondo blanco oficial */
-            overflow: hidden;
-        }
-
-        .splash-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .youtube-logo {
-            width: 120px; /* Tamaño similar al de inicio en Android */
-            height: auto;
-            /* Animación suave de entrada */
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
-        }
-
-        /* Ocultar scrollbar */
-        ::-webkit-scrollbar {
-            display: none;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+            cursor: pointer;
+            z-index: 999;
+            font-family: Arial, sans-serif;
         }
     </style>
-
-    <script>
-        window.onload = function() {
-            // Esperamos un segundo pequeño para que el usuario vea el logo 
-            // y luego redirigimos a la versión móvil de YouTube
-            setTimeout(function() {
-                window.location.href = "https://m.youtube.com";
-            }, 1200); 
-        };
-    </script>
 </head>
 <body>
 
-    <div class="splash-container">
-        <img class="youtube-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube">
-    </div>
+    <iframe id="app-container" src="https://www.youtube.com/mobile"></iframe>
 
+    <div class="btn-descarga" onclick="descargarVideo()">↓</div>
+
+    <script>
+        function descargarVideo() {
+            // Por ahora solo nos avisará, luego le daremos la magia
+            const urlActual = document.getElementById('app-container').src;
+            alert("Preparando descarga de: " + urlActual);
+            // Aquí conectaremos luego con el servidor de descarga
+        }
+    </script>
 </body>
 </html>
