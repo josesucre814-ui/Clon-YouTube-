@@ -3,45 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi YouTube Pro</title>
+    <title>Descargador Pro</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000; }
-        /* Contenedor del video/web */
-        #app-container { width: 100%; height: 100%; border: none; }
-        
-        /* Estilo para tu futuro botón flotante de descarga */
+        body { font-family: Arial, sans-serif; background-color: #f9f9f9; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; text-align: center; }
+        .logo { width: 80px; margin-bottom: 20px; }
+        h1 { color: #cc0000; font-size: 24px; }
+        p { color: #666; }
+        input { width: 100%; max-width: 400px; padding: 15px; border: 2px solid #ddd; border-radius: 10px; margin: 20px 0; font-size: 16px; }
         .btn-descarga {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: #ff0000;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-            cursor: pointer;
-            z-index: 999;
-            font-family: Arial, sans-serif;
+            background-color: #ff0000; color: white; border: none; padding: 15px 30px;
+            border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); width: 100%; max-width: 430px;
         }
     </style>
 </head>
 <body>
-
-    <iframe id="app-container" src="https://www.youtube.com/mobile"></iframe>
-
-    <div class="btn-descarga" onclick="descargarVideo()">↓</div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" class="logo" alt="Logo">
+    <h1>YouTube Downloader</h1>
+    <p>Pega el enlace del video que quieres descargar:</p>
+    
+    <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+    
+    <button class="btn-descarga" onclick="irADescargar()">Descargar Video ↓</button>
 
     <script>
-        function descargarVideo() {
-            // Por ahora solo nos avisará, luego le daremos la magia
-            const urlActual = document.getElementById('app-container').src;
-            alert("Preparando descarga de: " + urlActual);
-            // Aquí conectaremos luego con el servidor de descarga
+        function irADescargar() {
+            const url = document.getElementById('videoUrl').value;
+            if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                // Esta es una "llave" mágica que envía el video a un servidor de descarga rápida
+                const linkDescarga = "https://9xbuddy.com/process?url=" + encodeURIComponent(url);
+                window.location.href = linkDescarga;
+            } else {
+                alert("Por favor, pega un enlace válido de YouTube.");
+            }
         }
     </script>
 </body>
