@@ -3,80 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTube Search Pro</title>
+    <title>Buscador YouTube</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background: #0f0f0f; font-family: sans-serif; overflow: hidden; }
-        
-        /* Pantalla de Inicio (Buscador) */
-        #search-screen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; width: 100%; position: absolute; z-index: 10; background: #0f0f0f;
-        }
-        
-        .logo { font-size: 40px; font-weight: bold; color: white; margin-bottom: 20px; }
-        .logo span { background: #ff0000; padding: 2px 8px; border-radius: 8px; }
-        
-        .search-box { width: 80%; max-width: 400px; display: flex; background: #222; border-radius: 25px; padding: 10px 20px; border: 1px solid #333; }
-        input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 16px; }
-        
-        /* Botón Flotante (Siempre visible al final) */
-        #float-btn {
-            position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
-            background: #ff0000; color: white; border-radius: 50%; border: 2px solid white;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 9999; cursor: pointer;
+        /* Estilos inspirados en el YouTube clásico */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
 
-        /* Contenedor de YouTube (Oculto al inicio) */
-        #web-container { width: 100%; height: 100%; border: none; display: none; }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #282828;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-box {
+            background-color: #ff0000;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .search-form {
+            display: flex;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            outline: none;
+            border-radius: 2px 0 0 2px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            border-left: none;
+            cursor: pointer;
+            border-radius: 0 2px 2px 0;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .footer-text {
+            margin-top: 15px;
+            color: #666;
+            font-size: 13px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="search-screen">
-        <div class="logo">My<span>Tube</span></div>
-        <div class="search-box">
-            <input type="text" id="query" placeholder="¿Qué quieres ver?">
-            <button onclick="buscar()" style="background:none; border:none; color:red; font-size:20px;">🔍</button>
+    <div class="container">
+        <div class="logo">
+            <span class="logo-box">You</span> Tube
         </div>
-        <p style="color:#666; margin-top:15px;">Busca y descarga al instante</p>
-    </div>
-
-    <div id="float-btn" onclick="descargarAhora()">
-        <span style="font-size:30px; font-weight:bold;">↓</span>
-        <span style="font-size:10px;">BAJAR</span>
+        
+        <div class="search-form">
+            <input type="text" id="searchInput" placeholder="Buscar" onkeypress="if(event.key === 'Enter') buscar()">
+            <button onclick="buscar()">
+                <svg viewBox="0 0 24 24" width="20" height="20" style="vertical-align: middle;">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <p class="footer-text">Introduce un término para buscar videos.</p>
     </div>
 
     <script>
         function buscar() {
-            const q = document.getElementById('query').value;
-            if(q) {
-                // TRUCO: Redirigimos la página completa a los resultados
-                // Esto hará que el botón flotante se pierda si la página cambia totalmente.
-                // Para que el botón se quede, usaremos un aviso antes de irnos.
-                
-                const urlYoutube = "https://m.youtube.com/results?search_query=" + encodeURIComponent(q);
-                
-                // Mostramos el botón antes de irnos para que sepas que está ahí
-                document.getElementById('float-btn').style.display = 'flex';
-                
-                // Abrimos YouTube
-                window.location.href = urlYoutube;
-            }
-        }
-
-        function descargarAhora() {
-            // Como ya estás en YouTube, el usuario solo tiene que copiar el link
-            const link = prompt("Copia y pega aquí el link del video que estás viendo:");
-            if(link) {
-                window.location.href = "https://9xbuddy.com/process?url=" + encodeURIComponent(link);
-            }
-        }
-
-        // Si la página carga y ya estamos en YouTube, mostramos el botón
-        window.onload = function() {
-            if(window.location.href.includes("youtube.com")) {
-                document.getElementById('float-btn').style.display = 'flex';
+            const query = document.getElementById('searchInput').value;
+            if (query.trim() !== "") {
+                // Redirige directamente a los resultados de búsqueda de YouTube
+                window.location.href = "https://m.youtube.com/results?search_query=" + encodeURIComponent(query);
             }
         }
     </script>
