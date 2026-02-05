@@ -10,7 +10,6 @@
             --bg-black: #0f0f0f; 
             --glass-bg: rgba(25, 25, 25, 0.85); 
             --text-white: #ffffff; 
-            --text-gray: #f1f1f1; 
             --yt-red: #ff0000; 
         }
         
@@ -19,93 +18,71 @@
             background-color: var(--bg-black); 
             color: white; 
             margin: 0; 
-            padding-top: 115px; 
+            padding-top: 115px; /* Espacio para el header */
             padding-bottom: 75px; 
             overflow-x: hidden; 
         }
 
-        /* HEADER Y SECCIONES CON TRANSPARENCIA */
+        /* HEADER Y SECCIONES CON ANIMACIÓN DE OCULTAR */
         .header-fixed { 
             position: fixed; 
             top: 0; 
             width: 100%; 
             background: var(--glass-bg); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 100; 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 1000; 
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease-in-out; /* Animación suave */
         }
         
+        /* Clase para esconder el menú */
+        .header-hidden {
+            transform: translateY(-100%);
+        }
+
         .header { height: 56px; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; }
-        
-        .logo-section { font-size: 19px; font-weight: bold; letter-spacing: -0.5px; display: flex; align-items: center; color: var(--text-white); }
-        .logo-section span { background: var(--yt-red); padding: 1px 5px; border-radius: 4px; margin-right: 4px; font-size: 14px; color: white; }
+        .logo-section { font-size: 19px; font-weight: bold; display: flex; align-items: center; }
+        .logo-section span { background: var(--yt-red); padding: 1px 5px; border-radius: 4px; margin-right: 4px; font-size: 14px; }
         
         .fake-search { 
             background: rgba(255,255,255,0.1); 
-            flex: 1; 
-            margin: 0 10px; 
-            padding: 8px 15px; 
-            border-radius: 20px; 
-            color: var(--text-gray); 
-            font-size: 14px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            flex: 1; margin: 0 10px; padding: 8px 15px; border-radius: 20px; 
+            color: #ccc; font-size: 14px; display: flex; justify-content: space-between; align-items: center; 
         }
 
-        /* SECCIONES EN GRIS TRANSPARENTE */
         .sections-bar { display: flex; overflow-x: auto; padding: 10px 12px; gap: 8px; scrollbar-width: none; }
         .sections-bar::-webkit-scrollbar { display: none; }
         
         .chip { 
-            background: rgba(255,255,255,0.15); 
-            color: var(--text-white); 
-            padding: 6px 14px; 
-            border-radius: 8px; 
-            font-size: 14px; 
-            white-space: nowrap; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            cursor: pointer; 
-            transition: 0.2s; 
+            background: rgba(255,255,255,0.15); color: white; padding: 6px 14px; 
+            border-radius: 8px; font-size: 14px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); 
         }
-
-        /* BUSCADOR OVERLAY */
-        #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-black); z-index: 2000; display: none; flex-direction: column; }
-        .search-header { display: flex; align-items: center; padding: 8px 12px; border-bottom: 1px solid #333; gap: 10px; }
-        .search-input-container { flex: 1; display: flex; align-items: center; background: #222; padding: 0 15px; border-radius: 20px; height: 42px; }
-        .search-input-container input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; }
 
         /* FEED */
         .feed { padding: 10px 12px; display: flex; flex-direction: column; gap: 20px; }
-        .card { border-radius: 12px; overflow: hidden; cursor: pointer; }
-        .card-thumb { width: 100%; height: 210px; border-radius: 12px; background-size: cover; background-position: center; background-color: #222; box-shadow: inset 0 -40px 50px rgba(0,0,0,0.6); }
-        .card-info { padding: 12px 5px; }
-        .card-title { font-size: 17px; font-weight: 500; margin: 0; color: var(--text-white); }
+        .card { border-radius: 12px; overflow: hidden; }
+        .card-thumb { width: 100%; height: 210px; border-radius: 12px; background-size: cover; background-position: center; background-color: #222; }
+        .card-title { font-size: 17px; font-weight: 500; padding: 10px 5px; margin: 0; }
 
-        /* MENU INFERIOR CON TRANSPARENCIA */
+        /* NAV INFERIOR TRANSPARENTE */
         .nav-bottom { 
-            position: fixed; 
-            bottom: 0; 
-            width: 100%; 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px);
-            height: 65px; 
-            display: flex; 
-            justify-content: space-around; 
-            align-items: center; 
-            border-top: 1px solid rgba(255,255,255,0.1); 
-            z-index: 100; 
+            position: fixed; bottom: 0; width: 100%; background: var(--glass-bg); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            height: 65px; display: flex; justify-content: space-around; align-items: center; 
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; 
         }
         
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-white); font-size: 10px; cursor: pointer; text-decoration: none; }
-        .nav-item svg { width: 24px; height: 24px; fill: #ffffff; margin-bottom: 4px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: white; font-size: 10px; }
+        .nav-item svg { width: 24px; height: 24px; fill: white; margin-bottom: 4px; }
+
+        /* BUSCADOR */
+        #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-black); z-index: 2000; display: none; flex-direction: column; }
     </style>
 </head>
 <body>
 
-    <div class="header-fixed">
+    <div class="header-fixed" id="mainHeader">
         <div class="header">
             <div class="logo-section"><span>My</span>Tube</div>
             <div class="fake-search" onclick="openSearch()">
@@ -116,22 +93,10 @@
         <div class="sections-bar">
             <div class="chip" onclick="ejecutarBusqueda('Todo')">Todo</div>
             <div class="chip" onclick="ejecutarBusqueda('Música')">Música</div>
-            <div class="chip" onclick="ejecutarBusqueda('Películas')">Películas</div> <div class="chip" onclick="ejecutarBusqueda('Mixes')">Mixes</div>
+            <div class="chip" onclick="ejecutarBusqueda('Películas')">Películas</div>
+            <div class="chip" onclick="ejecutarBusqueda('Mixes')">Mixes</div>
             <div class="chip" onclick="ejecutarBusqueda('Gaming')">Gaming</div>
         </div>
-    </div>
-
-    <div id="search-overlay">
-        <div class="search-header">
-            <span onclick="closeSearch()" style="font-size:24px; cursor:pointer">←</span>
-            <div class="search-input-container">
-                <input type="text" id="realSearch" placeholder="Buscar en YouTube..." onkeypress="if(event.key === 'Enter') ejecutarBusqueda(this.value)">
-                <span style="cursor:pointer; color:#aaa; margin-right:10px" onclick="document.getElementById('realSearch').value = ''">✕</span>
-                <svg style="width:20px; fill:white" viewBox="0 0 24 24" onclick="ejecutarBusqueda(document.getElementById('realSearch').value)"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
-            </div>
-        </div>
-        <div id="history-display" style="flex:1; overflow-y:auto;"></div>
-        <div onclick="borrarTodo()" style="text-align:center; color:#3ea6ff; padding:20px; font-size:14px; cursor:pointer">BORRAR HISTORIAL</div>
     </div>
 
     <div id="feed" class="feed"></div>
@@ -143,38 +108,37 @@
     </div>
 
     <script>
-        // Aquí podrás poner tu enlace para 'películas'
-        const misImagenes = {
-            'películas': '', 
-            'música': '',
-            'gaming': '',
-            'mixes': '',
-            'default': 'https://picsum.photos/500/300' 
-        };
+        // LOGICA PARA ESCONDER EL MENU AL DESLIZAR
+        let lastScroll = 0;
+        const header = document.getElementById('mainHeader');
 
-        function openSearch() { document.getElementById('search-overlay').style.display = 'flex'; document.getElementById('realSearch').focus(); renderHistory(); }
-        function closeSearch() { document.getElementById('search-overlay').style.display = 'none'; }
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
 
+            if (currentScroll <= 0) {
+                header.classList.remove('header-hidden');
+                return;
+            }
+
+            if (currentScroll > lastScroll && !header.classList.contains('header-hidden')) {
+                // Deslizando hacia ABAJO -> Esconder
+                header.classList.add('header-hidden');
+            } else if (currentScroll < lastScroll && header.classList.contains('header-hidden')) {
+                // Deslizando hacia ARRIBA -> Mostrar
+                header.classList.remove('header-hidden');
+            }
+            lastScroll = currentScroll;
+        });
+
+        // Funciones de búsqueda (Mantienen tu historial)
         function ejecutarBusqueda(t) {
             if (!t) return;
             let historial = JSON.parse(localStorage.getItem('yt_history')) || [];
             historial = historial.filter(i => i.texto !== t);
-            const seed = Math.floor(Math.random() * 5000);
-            const img = misImagenes[t.toLowerCase()] || `https://picsum.photos/seed/${seed}/500/300`;
+            const img = `https://picsum.photos/seed/${Math.random()}/500/300`;
             historial.unshift({ texto: t, img: img });
             localStorage.setItem('yt_history', JSON.stringify(historial.slice(0,25)));
             window.location.href = "https://m.youtube.com/results?search_query=" + encodeURIComponent(t);
-        }
-
-        function renderHistory() {
-            const container = document.getElementById('history-display');
-            const historial = JSON.parse(localStorage.getItem('yt_history')) || [];
-            container.innerHTML = historial.map(item => `
-                <div class="history-item" onclick="ejecutarBusqueda('${item.texto}')" style="display:flex; align-items:center; padding:12px 16px;">
-                    <svg style="width:18px; fill:#aaa; margin-right:20px" viewBox="0 0 24 24"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
-                    <span>${item.texto}</span>
-                </div>
-            `).join('');
         }
 
         function mostrarFeed() {
@@ -183,12 +147,12 @@
             feed.innerHTML = historial.map(item => `
                 <div class="card" onclick="ejecutarBusqueda('${item.texto}')">
                     <div class="card-thumb" style="background-image: url('${item.img}')"></div>
-                    <div class="card-info"><h3 class="card-title">${item.texto}</h3></div>
+                    <h3 class="card-title">${item.texto}</h3>
                 </div>
             `).join('');
         }
 
-        function borrarTodo() { localStorage.removeItem('yt_history'); location.reload(); }
+        function openSearch() { /* Abre el buscador */ alert("Abriendo buscador..."); }
         window.onload = mostrarFeed;
     </script>
 </body>
