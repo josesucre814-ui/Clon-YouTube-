@@ -3,138 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyTube Search & Download</title>
+    <title>MyTube Search Pro</title>
     <style>
-        /* Estilo moderno y oscuro */
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #0f0f0f; 
-            color: white; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh;
+        body, html { margin: 0; padding: 0; height: 100%; background: #0f0f0f; font-family: sans-serif; overflow: hidden; }
+        
+        /* Pantalla de Inicio (Buscador) */
+        #search-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; width: 100%; position: absolute; z-index: 10; background: #0f0f0f;
         }
         
-        .search-container { 
-            width: 90%; 
-            max-width: 500px; 
-            text-align: center; 
-        }
+        .logo { font-size: 40px; font-weight: bold; color: white; margin-bottom: 20px; }
+        .logo span { background: #ff0000; padding: 2px 8px; border-radius: 8px; }
         
-        .logo { 
-            font-size: 40px; 
-            font-weight: bold; 
-            margin-bottom: 30px; 
-            color: #fff;
-        }
-        .logo span { 
-            background-color: #ff0000; 
-            padding: 2px 8px; 
-            border-radius: 8px; 
-            margin-left: 5px;
+        .search-box { width: 80%; max-width: 400px; display: flex; background: #222; border-radius: 25px; padding: 10px 20px; border: 1px solid #333; }
+        input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 16px; }
+        
+        /* Botón Flotante (Siempre visible al final) */
+        #float-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
+            background: #ff0000; color: white; border-radius: 50%; border: 2px solid white;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 9999; cursor: pointer;
         }
 
-        .search-box { 
-            display: flex; 
-            background: #222; 
-            border-radius: 30px; 
-            padding: 8px 20px; 
-            border: 1px solid #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        
-        input { 
-            flex: 1; 
-            background: transparent; 
-            border: none; 
-            color: white; 
-            padding: 10px; 
-            font-size: 18px; 
-            outline: none; 
-        }
-        
-        .search-btn { 
-            background: transparent; 
-            border: none; 
-            color: #ff0000; 
-            cursor: pointer; 
-            font-size: 20px; 
-            padding: 5px;
-        }
-
-        .hint {
-            color: #717171;
-            font-size: 13px;
-            margin-top: 20px;
-            line-height: 1.5;
-        }
-
-        /* EL BOTÓN FLOTANTE */
-        .floating-download {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 70px;
-            height: 70px;
-            background: #ff0000;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
-            cursor: pointer;
-            z-index: 1000;
-            border: 2px solid #fff;
-            transition: transform 0.2s;
-        }
-        .floating-download:active { transform: scale(0.9); }
-        .dl-icon { font-size: 30px; font-weight: bold; }
-        .dl-text { font-size: 10px; font-weight: bold; }
+        /* Contenedor de YouTube (Oculto al inicio) */
+        #web-container { width: 100%; height: 100%; border: none; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="search-container">
+    <div id="search-screen">
         <div class="logo">My<span>Tube</span></div>
-        
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar en YouTube..." onkeypress="if(event.key === 'Enter') ejecutarBusqueda()">
-            <button class="search-btn" onclick="ejecutarBusqueda()">🔍</button>
+            <input type="text" id="query" placeholder="¿Qué quieres ver?">
+            <button onclick="buscar()" style="background:none; border:none; color:red; font-size:20px;">🔍</button>
         </div>
-        
-        <div class="hint">
-            1. Busca tu video favorito.<br>
-            2. Copia el enlace del video.<br>
-            3. Toca el botón rojo para descargar.
-        </div>
+        <p style="color:#666; margin-top:15px;">Busca y descarga al instante</p>
     </div>
 
-    <div class="floating-download" onclick="abrirDescargador()">
-        <span class="dl-icon">↓</span>
-        <span class="dl-text">DESCARGAR</span>
+    <div id="float-btn" onclick="descargarAhora()">
+        <span style="font-size:30px; font-weight:bold;">↓</span>
+        <span style="font-size:10px;">BAJAR</span>
     </div>
 
     <script>
-        function ejecutarBusqueda() {
-            const query = document.getElementById('searchInput').value;
-            if (query.trim() !== "") {
-                // Abre YouTube con la búsqueda realizada
-                window.open("https://m.youtube.com/results?search_query=" + encodeURIComponent(query), "_blank");
+        function buscar() {
+            const q = document.getElementById('query').value;
+            if(q) {
+                // TRUCO: Redirigimos la página completa a los resultados
+                // Esto hará que el botón flotante se pierda si la página cambia totalmente.
+                // Para que el botón se quede, usaremos un aviso antes de irnos.
+                
+                const urlYoutube = "https://m.youtube.com/results?search_query=" + encodeURIComponent(q);
+                
+                // Mostramos el botón antes de irnos para que sepas que está ahí
+                document.getElementById('float-btn').style.display = 'flex';
+                
+                // Abrimos YouTube
+                window.location.href = urlYoutube;
             }
         }
 
-        function abrirDescargador() {
-            const link = prompt("Pega el enlace del video de YouTube aquí:");
-            if (link && (link.includes("youtube.com") || link.includes("youtu.be"))) {
-                // Redirige al motor de descarga con el link procesado
+        function descargarAhora() {
+            // Como ya estás en YouTube, el usuario solo tiene que copiar el link
+            const link = prompt("Copia y pega aquí el link del video que estás viendo:");
+            if(link) {
                 window.location.href = "https://9xbuddy.com/process?url=" + encodeURIComponent(link);
-            } else if (link) {
-                alert("Por favor, introduce un enlace de YouTube válido.");
+            }
+        }
+
+        // Si la página carga y ya estamos en YouTube, mostramos el botón
+        window.onload = function() {
+            if(window.location.href.includes("youtube.com")) {
+                document.getElementById('float-btn').style.display = 'flex';
             }
         }
     </script>
