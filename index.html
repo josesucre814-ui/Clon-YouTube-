@@ -9,38 +9,37 @@
         :root { --bg-black: #0f0f0f; --text-white: #ffffff; --text-gray: #aaa; --yt-red: #ff0000; }
         body { font-family: 'Roboto', sans-serif; background-color: var(--bg-black); color: white; margin: 0; padding-top: 60px; padding-bottom: 70px; overflow-x: hidden; }
 
-        /* HEADER PRINCIPAL */
+        /* HEADER */
         .header { position: fixed; top: 0; width: 100%; background: var(--bg-black); z-index: 100; height: 56px; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; justify-content: space-between; }
         .logo-section { font-size: 20px; font-weight: bold; letter-spacing: -1px; }
         .logo-section span { background: var(--yt-red); padding: 2px 6px; border-radius: 4px; margin-right: 4px; }
         .fake-search { background: #222; flex: 1; margin: 0 15px; padding: 8px 15px; border-radius: 20px; color: var(--text-gray); font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* OVERLAY DE BÚSQUEDA (PANTALLA COMPLETA) */
+        /* OVERLAY DE BÚSQUEDA */
         #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-black); z-index: 2000; display: none; flex-direction: column; }
         .search-header { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid #333; }
         .back-btn { font-size: 24px; margin-right: 20px; cursor: pointer; }
         .search-input-container { flex: 1; display: flex; align-items: center; background: #222; padding: 5px 15px; border-radius: 20px; }
         .search-input-container input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; }
 
-        /* LISTA DE HISTORIAL EN OVERLAY */
+        /* HISTORIAL CON LUPA */
         .history-list { flex: 1; overflow-y: auto; padding: 10px 0; }
         .history-item { display: flex; align-items: center; padding: 12px 16px; cursor: pointer; }
         .history-item:active { background: #333; }
-        .history-icon { margin-right: 20px; opacity: 0.6; }
+        .history-icon { width: 20px; height: 20px; margin-right: 20px; fill: var(--text-gray); }
         .history-text { flex: 1; font-size: 16px; }
-        .delete-all { text-align: center; color: #3ea6ff; padding: 15px; font-size: 14px; cursor: pointer; }
+        .delete-all { text-align: center; color: #3ea6ff; padding: 15px; font-size: 14px; cursor: pointer; font-weight: 500; }
 
-        /* FEED DE CARÁTULAS */
+        /* FEED */
         .feed { padding: 10px 12px; display: flex; flex-direction: column; gap: 20px; }
-        .card { border-radius: 12px; overflow: hidden; }
-        .card-thumb { width: 100%; height: 200px; border-radius: 12px; background-size: cover; background-position: center; position: relative; }
+        .card { border-radius: 12px; overflow: hidden; cursor: pointer; }
+        .card-thumb { width: 100%; height: 200px; border-radius: 12px; background-size: cover; background-position: center; }
         .card-info { padding: 10px 5px; }
         .card-title { font-size: 16px; font-weight: 500; margin: 0; }
 
-        /* BARRA INFERIOR (3 ICONOS) */
+        /* BARRA INFERIOR */
         .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--bg-black); height: 60px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); font-size: 10px; cursor: pointer; }
-        .nav-item.active { color: white; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); font-size: 10px; cursor: pointer; text-decoration: none; }
         .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
     </style>
 </head>
@@ -69,7 +68,7 @@
     <div id="feed" class="feed"></div>
 
     <div class="nav-bottom">
-        <div class="nav-item active" onclick="location.reload()">
+        <div class="nav-item" onclick="window.location.href='https://m.youtube.com'">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             Inicio
         </div>
@@ -88,7 +87,6 @@
             'todo': 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500',
             'música': 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500',
             'vallenato': 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500',
-            'shorts': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=500',
             'default': 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=500'
         };
 
@@ -106,13 +104,9 @@
             if (!t) return;
             let historial = JSON.parse(localStorage.getItem('yt_history')) || [];
             historial = historial.filter(i => i.texto !== t);
-            
-            const key = t.toLowerCase();
-            const img = imagenesSagradas[key] || imagenesSagradas['default'];
-            
+            const img = imagenesSagradas[t.toLowerCase()] || imagenesSagradas['default'];
             historial.unshift({ texto: t, fecha: new Date().toLocaleDateString(), img: img });
             localStorage.setItem('yt_history', JSON.stringify(historial.slice(0,15)));
-            
             window.location.href = "https://m.youtube.com/results?search_query=" + encodeURIComponent(t);
         }
 
@@ -123,7 +117,7 @@
             historial.forEach(item => {
                 container.innerHTML += `
                     <div class="history-item" onclick="ejecutarBusqueda('${item.texto}')">
-                        <span class="history-icon">🕒</span>
+                        <svg class="history-icon" viewBox="0 0 24 24"><path d="M21,19.1l-5.1-5.1c1.2-1.5,2-3.5,2-5.6c0-4.9-4-8.9-8.9-8.9S0.1,3.5,0.1,8.4s4,8.9,8.9,8.9c2.1,0,4.1-0.7,5.6-2l5.1,5.1 L21,19.1z M8.9,15.3c-3.8,0-6.9-3.1-6.9-6.9s3.1-6.9,6.9-6.9s6.9,3.1,6.9,6.9S12.7,15.3,8.9,15.3z"></path></svg>
                         <span class="history-text">${item.texto}</span>
                         <span style="opacity:0.4">↗</span>
                     </div>
