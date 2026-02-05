@@ -5,69 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyTube Pro Launcher</title>
     <style>
-        :root { --yt-red: #ff0000; --bg-black: #0f0f0f; --card-bg: #1e1e1e; }
+        :root { --yt-red: #ff0000; --bg-black: #0f0f0f; --card-bg: #1e1e1e; --text-gray: #aaa; }
         body { font-family: 'Roboto', Arial, sans-serif; background-color: var(--bg-black); color: white; margin: 0; overflow-x: hidden; }
 
-        /* BUSCADOR FIJO */
-        .header { position: fixed; top: 0; width: 100%; background: var(--bg-black); z-index: 1000; padding: 10px 0; border-bottom: 1px solid #333; }
-        .search-container { display: flex; align-items: center; background: #222; margin: 0 15px; padding: 8px 15px; border-radius: 20px; border: 1px solid #444; }
-        input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 16px; }
+        /* HEADER Y BUSCADOR ESTILO NATIVO */
+        .header { position: fixed; top: 0; width: 100%; background: var(--bg-black); z-index: 1000; padding: 10px 0; }
+        .search-bar { 
+            display: flex; align-items: center; background: #222; margin: 0 12px; padding: 6px 12px; 
+            border-radius: 24px; border: 1px solid #333;
+        }
+        input { 
+            flex: 1; background: transparent; border: none; color: white; 
+            outline: none; font-size: 16px; padding: 5px 10px;
+        }
+        
+        /* BOTÓN X Y LUPA */
+        .search-icon { width: 20px; height: 20px; fill: white; cursor: pointer; }
+        .clear-btn { 
+            color: var(--text-gray); font-size: 20px; margin-right: 10px; 
+            cursor: pointer; display: none; font-weight: 300;
+        }
 
-        /* SECCIONES (Scroll Horizontal) */
-        .sections-bar { display: flex; overflow-x: auto; padding: 60px 10px 10px; gap: 10px; scrollbar-width: none; }
+        /* SECCIONES (PÍLDORAS) */
+        .sections-bar { 
+            display: flex; overflow-x: auto; padding: 65px 12px 10px; 
+            gap: 8px; scrollbar-width: none; background: var(--bg-black);
+        }
         .sections-bar::-webkit-scrollbar { display: none; }
-        .chip { background: #272727; padding: 8px 16px; border-radius: 8px; font-size: 14px; white-space: nowrap; cursor: pointer; border: 1px solid #3f3f3f; transition: 0.2s; }
-        .chip:active { background: #fff; color: #000; }
+        .chip { 
+            background: #272727; padding: 6px 12px; border-radius: 8px; 
+            font-size: 14px; white-space: nowrap; border: 1px solid #3f3f3f; 
+        }
 
-        /* CASCADA DE CARÁTULAS */
-        .feed { padding: 15px; display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #333; }
-        .card-thumb { height: 180px; background: linear-gradient(45deg, #222, #444); display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--yt-red); }
-        .card-info { padding: 12px; }
-        .card-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
-        .card-meta { font-size: 12px; color: #aaa; }
+        /* FEED DE CARÁTULAS GRANDES */
+        .feed { padding: 10px 12px; display: flex; flex-direction: column; gap: 15px; }
+        .card { background: transparent; border-radius: 12px; overflow: hidden; cursor: pointer; }
+        .card-thumb { 
+            width: 100%; height: 200px; border-radius: 12px; 
+            background-size: cover; background-position: center;
+            background-color: #222; position: relative;
+        }
+        .play-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.6); border-radius: 50%; padding: 15px; display: flex;
+        }
+        .card-info { padding: 10px 5px; }
+        .card-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; display: block; }
+        .card-meta { font-size: 12px; color: var(--text-gray); }
 
-        .empty-msg { text-align: center; color: #666; margin-top: 50px; padding: 20px; }
+        .empty-msg { text-align: center; color: #555; margin-top: 100px; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="search-container">
-            <input type="text" id="mainSearch" placeholder="Buscar en YouTube..." onkeypress="if(event.key === 'Enter') procesarBusqueda(this.value)">
-            <span onclick="procesarBusqueda(document.getElementById('mainSearch').value)" style="cursor:pointer">🔍</span>
+        <div class="search-bar">
+            <input type="text" id="mainSearch" placeholder="Buscar en YouTube..." 
+                   oninput="toggleClearBtn(this.value)"
+                   onkeypress="if(event.key === 'Enter') procesarBusqueda(this.value)">
+            
+            <span id="clearBtn" class="clear-btn" onclick="clearSearch()">✕</span>
+            
+            <div onclick="procesarBusqueda(document.getElementById('mainSearch').value)">
+                <svg class="search-icon" viewBox="0 0 24 24"><g><path d="M21,19.1l-5.1-5.1c1.2-1.5,2-3.5,2-5.6c0-4.9-4-8.9-8.9-8.9S0.1,3.5,0.1,8.4s4,8.9,8.9,8.9c2.1,0,4.1-0.7,5.6-2l5.1,5.1 L21,19.1z M8.9,15.3c-3.8,0-6.9-3.1-6.9-6.9s3.1-6.9,6.9-6.9s6.9,3.1,6.9,6.9S12.7,15.3,8.9,15.3z"></path></g></svg>
+            </div>
         </div>
     </div>
 
     <div class="sections-bar">
         <div class="chip" onclick="procesarBusqueda('Todo')">Todo</div>
-        <div class="chip" onclick="procesarBusqueda('Musica')">Música</div>
+        <div class="chip" onclick="procesarBusqueda('Música')">Música</div>
         <div class="chip" onclick="procesarBusqueda('Vallenato')">Vallenato</div>
-        <div class="chip" onclick="procesarBusqueda('Mix 2024')">Mixes</div>
-        <div class="chip" onclick="procesarBusqueda('Gaming')">Gaming</div>
-        <div class="chip" onclick="procesarBusqueda('Noticias')">Noticias</div>
+        <div class="chip" onclick="procesarBusqueda('Películas')">Películas</div>
+        <div class="chip" onclick="procesarBusqueda('En vivo')">En vivo</div>
     </div>
 
-    <div id="feed" class="feed">
-        </div>
+    <div id="feed" class="feed"></div>
 
     <script>
-        // Al cargar la página, dibujar el historial guardado
         window.onload = mostrarHistorial;
+
+        function toggleClearBtn(val) {
+            document.getElementById('clearBtn').style.display = val.length > 0 ? 'block' : 'none';
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('mainSearch');
+            input.value = '';
+            input.focus();
+            toggleClearBtn('');
+        }
 
         function procesarBusqueda(termino) {
             if (!termino) return;
-
-            // 1. Guardar en el historial (LocalStorage)
             let historial = JSON.parse(localStorage.getItem('yt_history')) || [];
-            // Evitar duplicados: si ya existe, lo quitamos para ponerlo de primero
             historial = historial.filter(item => item.texto !== termino);
-            historial.unshift({ texto: termino, fecha: new Date().toLocaleDateString() });
+            
+            // Imagen aleatoria de fondo para la carátula basada en el tema
+            const imgUrl = `https://source.unsplash.com/featured/?${encodeURIComponent(termino)},video`;
+            
+            historial.unshift({ 
+                texto: termino, 
+                fecha: new Date().toLocaleDateString(),
+                img: imgUrl 
+            });
+            
             localStorage.setItem('yt_history', JSON.stringify(historial));
-
-            // 2. Abrir YouTube en el navegador
-            const url = "https://m.youtube.com/results?search_query=" + encodeURIComponent(termino);
-            window.location.href = url;
+            window.location.href = "https://m.youtube.com/results?search_query=" + encodeURIComponent(termino);
         }
 
         function mostrarHistorial() {
@@ -75,7 +119,7 @@
             const historial = JSON.parse(localStorage.getItem('yt_history')) || [];
 
             if (historial.length === 0) {
-                feed.innerHTML = '<div class="empty-msg">Tu historial de búsqueda aparecerá aquí como carátulas.</div>';
+                feed.innerHTML = '<div class="empty-msg">No hay búsquedas recientes.<br>Tus carátulas aparecerán aquí.</div>';
                 return;
             }
 
@@ -83,10 +127,14 @@
             historial.forEach(item => {
                 const card = `
                     <div class="card" onclick="procesarBusqueda('${item.texto}')">
-                        <div class="card-thumb">▶</div>
+                        <div class="card-thumb" style="background-image: url('${item.img}')">
+                            <div class="play-btn">
+                                <svg fill="white" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </div>
                         <div class="card-info">
-                            <div class="card-title">${item.texto}</div>
-                            <div class="card-meta">Buscado el ${item.fecha} • Toca para volver a ver</div>
+                            <span class="card-title">${item.texto}</span>
+                            <span class="card-meta">Buscado el ${item.fecha} • Toca para abrir</span>
                         </div>
                     </div>
                 `;
