@@ -4,142 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyTube Pro Launcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        :root { --yt-red: #ff0000; --bg-black: #0f0f0f; --card-bg: #1e1e1e; --text-gray: #aaa; }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-black); color: white; margin: 0; padding-top: 110px; }
+        :root { --bg-black: #0f0f0f; --text-white: #ffffff; --text-gray: #aaa; --yt-red: #ff0000; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-black); color: white; margin: 0; padding-top: 60px; padding-bottom: 70px; overflow-x: hidden; }
 
-        /* HEADER */
-        .header { position: fixed; top: 0; width: 100%; background: var(--bg-black); z-index: 1000; padding: 10px 0; }
-        .search-bar { 
-            display: flex; align-items: center; background: #222; margin: 0 12px; padding: 4px 14px; 
-            border-radius: 24px; border: 1px solid #333; height: 36px;
-        }
-        input { 
-            flex: 1; background: transparent; border: none; color: white; 
-            outline: none; font-size: 16px;
-        }
-        
-        /* ICONOS LUPA Y X */
-        .yt-search-icon { width: 20px; height: 20px; fill: white; opacity: 0.9; }
-        .clear-btn { 
-            padding: 0 10px; color: var(--text-gray); font-size: 20px; 
-            cursor: pointer; display: none;
-        }
+        /* HEADER PRINCIPAL */
+        .header { position: fixed; top: 0; width: 100%; background: var(--bg-black); z-index: 100; height: 56px; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; justify-content: space-between; }
+        .logo-section { font-size: 20px; font-weight: bold; letter-spacing: -1px; }
+        .logo-section span { background: var(--yt-red); padding: 2px 6px; border-radius: 4px; margin-right: 4px; }
+        .fake-search { background: #222; flex: 1; margin: 0 15px; padding: 8px 15px; border-radius: 20px; color: var(--text-gray); font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* SECCIONES (PÍLDORAS) */
-        .sections-bar { 
-            position: fixed; top: 56px; width: 100%; display: flex; overflow-x: auto; 
-            padding: 8px 12px; gap: 8px; scrollbar-width: none; background: var(--bg-black); z-index: 999;
-        }
-        .sections-bar::-webkit-scrollbar { display: none; }
-        .chip { 
-            background: #272727; padding: 6px 14px; border-radius: 8px; 
-            font-size: 14px; white-space: nowrap; border: 1px solid #3f3f3f; 
-        }
+        /* OVERLAY DE BÚSQUEDA (PANTALLA COMPLETA) */
+        #search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-black); z-index: 2000; display: none; flex-direction: column; }
+        .search-header { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid #333; }
+        .back-btn { font-size: 24px; margin-right: 20px; cursor: pointer; }
+        .search-input-container { flex: 1; display: flex; align-items: center; background: #222; padding: 5px 15px; border-radius: 20px; }
+        .search-input-container input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; }
+
+        /* LISTA DE HISTORIAL EN OVERLAY */
+        .history-list { flex: 1; overflow-y: auto; padding: 10px 0; }
+        .history-item { display: flex; align-items: center; padding: 12px 16px; cursor: pointer; }
+        .history-item:active { background: #333; }
+        .history-icon { margin-right: 20px; opacity: 0.6; }
+        .history-text { flex: 1; font-size: 16px; }
+        .delete-all { text-align: center; color: #3ea6ff; padding: 15px; font-size: 14px; cursor: pointer; }
 
         /* FEED DE CARÁTULAS */
         .feed { padding: 10px 12px; display: flex; flex-direction: column; gap: 20px; }
-        .card { border-radius: 12px; overflow: hidden; text-decoration: none; color: white; }
-        .card-thumb { 
-            width: 100%; height: 200px; border-radius: 12px; 
-            background-size: cover; background-position: center;
-            background-color: #222; position: relative;
-            box-shadow: inset 0 -40px 60px rgba(0,0,0,0.6);
-        }
-        .play-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .card-info { padding: 10px 4px; }
+        .card { border-radius: 12px; overflow: hidden; }
+        .card-thumb { width: 100%; height: 200px; border-radius: 12px; background-size: cover; background-position: center; position: relative; }
+        .card-info { padding: 10px 5px; }
         .card-title { font-size: 16px; font-weight: 500; margin: 0; }
-        .card-meta { font-size: 12px; color: var(--text-gray); margin-top: 4px; display: block; }
+
+        /* BARRA INFERIOR (3 ICONOS) */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--bg-black); height: 60px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: white; }
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; fill: currentColor; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="search-bar">
-            <input type="text" id="mainSearch" placeholder="Buscar en YouTube..." 
-                   oninput="checkInput(this.value)"
-                   onkeypress="if(event.key === 'Enter') buscar(this.value)">
-            
-            <span id="clearBtn" class="clear-btn" onclick="limpiar()">✕</span>
-            
-            <div onclick="buscar(document.getElementById('mainSearch').value)">
-                <svg class="yt-search-icon" viewBox="0 0 24 24"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
-            </div>
+        <div class="logo-section"><span>My</span>Tube</div>
+        <div class="fake-search" onclick="openSearch()">
+            Buscar en YouTube...
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="gray"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
         </div>
     </div>
 
-    <div class="sections-bar">
-        <div class="chip" onclick="buscar('Todo')">Todo</div>
-        <div class="chip" onclick="buscar('Música')">Música</div>
-        <div class="chip" onclick="buscar('Vallenato')">Vallenato</div>
-        <div class="chip" onclick="buscar('Mixes')">Mixes</div>
-        <div class="chip" onclick="buscar('En vivo')">En vivo</div>
+    <div id="search-overlay">
+        <div class="search-header">
+            <span class="back-btn" onclick="closeSearch()">←</span>
+            <div class="search-input-container">
+                <input type="text" id="realSearch" placeholder="Buscar..." onkeypress="if(event.key === 'Enter') ejecutarBusqueda(this.value)">
+                <span style="cursor:pointer" onclick="document.getElementById('realSearch').value = ''">✕</span>
+            </div>
+        </div>
+        <div class="history-list" id="history-display"></div>
+        <div class="delete-all" onclick="borrarTodo()">BORRAR TODO EL HISTORIAL</div>
     </div>
 
     <div id="feed" class="feed"></div>
 
+    <div class="nav-bottom">
+        <div class="nav-item active" onclick="location.reload()">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Inicio
+        </div>
+        <div class="nav-item" onclick="window.location.href='https://m.youtube.com/shorts'">
+            <svg viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9,14.21,4,12,4c-4.42,0-7.99,3.58-7.99,8s3.57,8,7.99,8c3.73,0,6.84-2.55,7.73-6h-2.08c-.82,2.33-3.04,4-5.65,4-3.31,0-6-2.69-6-6s2.69-6,6-6c1.66,0,3.14,.69,4.22,1.78l-3.22,3.22h7V2l-3.22,3.22z"/></svg>
+            Shorts
+        </div>
+        <div class="nav-item" onclick="window.location.href='https://m.youtube.com/account'">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            Tú
+        </div>
+    </div>
+
     <script>
-        // Banco de imágenes seguras para que nunca fallen
-        const images = {
-            'todo': 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500&q=80',
-            'música': 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&q=80',
-            'vallenato': 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80',
-            'mixes': 'https://images.unsplash.com/photo-1514525253344-f814d074e015?w=500&q=80',
-            'películas': 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&q=80',
-            'default': 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=500&q=80'
+        const imagenesSagradas = {
+            'todo': 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500',
+            'música': 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500',
+            'vallenato': 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500',
+            'shorts': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=500',
+            'default': 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=500'
         };
 
-        window.onload = mostrarHistorial;
-
-        function checkInput(v) {
-            document.getElementById('clearBtn').style.display = v ? 'block' : 'none';
+        function openSearch() {
+            document.getElementById('search-overlay').style.display = 'flex';
+            document.getElementById('realSearch').focus();
+            renderHistory();
         }
 
-        function limpiar() {
-            document.getElementById('mainSearch').value = '';
-            checkInput('');
+        function closeSearch() {
+            document.getElementById('search-overlay').style.display = 'none';
         }
 
-        function buscar(t) {
+        function ejecutarBusqueda(t) {
             if (!t) return;
             let historial = JSON.parse(localStorage.getItem('yt_history')) || [];
             historial = historial.filter(i => i.texto !== t);
             
-            // Seleccionar imagen del banco o usar default
             const key = t.toLowerCase();
-            const img = images[key] || images['default'];
+            const img = imagenesSagradas[key] || imagenesSagradas['default'];
             
             historial.unshift({ texto: t, fecha: new Date().toLocaleDateString(), img: img });
-            localStorage.setItem('yt_history', JSON.stringify(historial.slice(0,10))); // Guardar últimos 10
+            localStorage.setItem('yt_history', JSON.stringify(historial.slice(0,15)));
             
             window.location.href = "https://m.youtube.com/results?search_query=" + encodeURIComponent(t);
         }
 
-        function mostrarHistorial() {
-            const feed = document.getElementById('feed');
+        function renderHistory() {
+            const container = document.getElementById('history-display');
             const historial = JSON.parse(localStorage.getItem('yt_history')) || [];
-            feed.innerHTML = historial.length ? '' : '<p style="text-align:center;color:#444;margin-top:50px">Historial vacío</p>';
-
+            container.innerHTML = '';
             historial.forEach(item => {
-                feed.innerHTML += `
-                    <div class="card" onclick="buscar('${item.texto}')">
-                        <div class="card-thumb" style="background-image: url('${item.img}')">
-                            <div class="play-overlay">
-                                <svg fill="white" width="30" height="30" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                        </div>
-                        <div class="card-info">
-                            <h3 class="card-title">${item.texto}</h3>
-                            <span class="card-meta">Buscado el ${item.fecha} • Toca para abrir</span>
-                        </div>
+                container.innerHTML += `
+                    <div class="history-item" onclick="ejecutarBusqueda('${item.texto}')">
+                        <span class="history-icon">🕒</span>
+                        <span class="history-text">${item.texto}</span>
+                        <span style="opacity:0.4">↗</span>
                     </div>
                 `;
             });
         }
+
+        function borrarTodo() {
+            if(confirm("¿Borrar todo el historial?")) {
+                localStorage.removeItem('yt_history');
+                renderHistory();
+                mostrarFeed();
+            }
+        }
+
+        function mostrarFeed() {
+            const feed = document.getElementById('feed');
+            const historial = JSON.parse(localStorage.getItem('yt_history')) || [];
+            feed.innerHTML = historial.length ? '' : '<p style="text-align:center;color:#444;margin-top:50px">Tu historial aparecerá aquí.</p>';
+            historial.forEach(item => {
+                feed.innerHTML += `
+                    <div class="card" onclick="ejecutarBusqueda('${item.texto}')">
+                        <div class="card-thumb" style="background-image: url('${item.img}')"></div>
+                        <div class="card-info"><h3 class="card-title">${item.texto}</h3></div>
+                    </div>
+                `;
+            });
+        }
+
+        window.onload = mostrarFeed;
     </script>
 </body>
 </html>
