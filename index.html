@@ -3,38 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargador Pro</title>
+    <title>MyTube Search & Download</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f9f9f9; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 20px; text-align: center; }
-        .logo { width: 80px; margin-bottom: 20px; }
-        h1 { color: #cc0000; font-size: 24px; }
-        p { color: #666; }
-        input { width: 100%; max-width: 400px; padding: 15px; border: 2px solid #ddd; border-radius: 10px; margin: 20px 0; font-size: 16px; }
-        .btn-descarga {
-            background-color: #ff0000; color: white; border: none; padding: 15px 30px;
-            border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); width: 100%; max-width: 430px;
+        /* Estilo moderno y oscuro */
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #0f0f0f; 
+            color: white; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh;
         }
+        
+        .search-container { 
+            width: 90%; 
+            max-width: 500px; 
+            text-align: center; 
+        }
+        
+        .logo { 
+            font-size: 40px; 
+            font-weight: bold; 
+            margin-bottom: 30px; 
+            color: #fff;
+        }
+        .logo span { 
+            background-color: #ff0000; 
+            padding: 2px 8px; 
+            border-radius: 8px; 
+            margin-left: 5px;
+        }
+
+        .search-box { 
+            display: flex; 
+            background: #222; 
+            border-radius: 30px; 
+            padding: 8px 20px; 
+            border: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        
+        input { 
+            flex: 1; 
+            background: transparent; 
+            border: none; 
+            color: white; 
+            padding: 10px; 
+            font-size: 18px; 
+            outline: none; 
+        }
+        
+        .search-btn { 
+            background: transparent; 
+            border: none; 
+            color: #ff0000; 
+            cursor: pointer; 
+            font-size: 20px; 
+            padding: 5px;
+        }
+
+        .hint {
+            color: #717171;
+            font-size: 13px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        /* EL BOTÓN FLOTANTE */
+        .floating-download {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: #ff0000;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            border: 2px solid #fff;
+            transition: transform 0.2s;
+        }
+        .floating-download:active { transform: scale(0.9); }
+        .dl-icon { font-size: 30px; font-weight: bold; }
+        .dl-text { font-size: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" class="logo" alt="Logo">
-    <h1>YouTube Downloader</h1>
-    <p>Pega el enlace del video que quieres descargar:</p>
-    
-    <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
-    
-    <button class="btn-descarga" onclick="irADescargar()">Descargar Video ↓</button>
+
+    <div class="search-container">
+        <div class="logo">My<span>Tube</span></div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar en YouTube..." onkeypress="if(event.key === 'Enter') ejecutarBusqueda()">
+            <button class="search-btn" onclick="ejecutarBusqueda()">🔍</button>
+        </div>
+        
+        <div class="hint">
+            1. Busca tu video favorito.<br>
+            2. Copia el enlace del video.<br>
+            3. Toca el botón rojo para descargar.
+        </div>
+    </div>
+
+    <div class="floating-download" onclick="abrirDescargador()">
+        <span class="dl-icon">↓</span>
+        <span class="dl-text">DESCARGAR</span>
+    </div>
 
     <script>
-        function irADescargar() {
-            const url = document.getElementById('videoUrl').value;
-            if (url.includes("youtube.com") || url.includes("youtu.be")) {
-                // Esta es una "llave" mágica que envía el video a un servidor de descarga rápida
-                const linkDescarga = "https://9xbuddy.com/process?url=" + encodeURIComponent(url);
-                window.location.href = linkDescarga;
-            } else {
-                alert("Por favor, pega un enlace válido de YouTube.");
+        function ejecutarBusqueda() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim() !== "") {
+                // Abre YouTube con la búsqueda realizada
+                window.open("https://m.youtube.com/results?search_query=" + encodeURIComponent(query), "_blank");
+            }
+        }
+
+        function abrirDescargador() {
+            const link = prompt("Pega el enlace del video de YouTube aquí:");
+            if (link && (link.includes("youtube.com") || link.includes("youtu.be"))) {
+                // Redirige al motor de descarga con el link procesado
+                window.location.href = "https://9xbuddy.com/process?url=" + encodeURIComponent(link);
+            } else if (link) {
+                alert("Por favor, introduce un enlace de YouTube válido.");
             }
         }
     </script>
