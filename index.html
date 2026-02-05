@@ -9,7 +9,7 @@
         :root { --bg-black: #0f0f0f; --text-white: #ffffff; --text-gray: #aaa; --yt-red: #ff0000; }
         body { font-family: 'Roboto', sans-serif; background-color: var(--bg-black); color: white; margin: 0; padding-top: 60px; padding-bottom: 70px; overflow-x: hidden; }
 
-        /* HEADER PRINCIPAL */
+        /* HEADER */
         .header { position: fixed; top: 0; width: 100%; background: var(--bg-black); z-index: 100; height: 56px; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; }
         .logo-section { font-size: 19px; font-weight: bold; letter-spacing: -0.5px; display: flex; align-items: center; }
         .logo-section span { background: var(--yt-red); padding: 1px 5px; border-radius: 4px; margin-right: 4px; font-size: 14px; }
@@ -21,20 +21,18 @@
         .back-btn { font-size: 24px; cursor: pointer; padding: 5px; }
         .search-input-container { flex: 1; display: flex; align-items: center; background: #222; padding: 0 15px; border-radius: 20px; height: 40px; }
         .search-input-container input { background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; }
-        .search-action-icons { display: flex; align-items: center; gap: 15px; }
-
-        /* ICONOS SVG */
+        
+        /* ICONOS */
         .yt-icon { width: 22px; height: 22px; fill: white; }
         .history-icon { width: 18px; height: 18px; fill: var(--text-gray); margin-right: 20px; }
 
-        /* LISTA DE HISTORIAL */
+        /* HISTORIAL */
         .history-list { flex: 1; overflow-y: auto; padding: 10px 0; }
         .history-item { display: flex; align-items: center; padding: 12px 16px; cursor: pointer; }
-        .history-item:active { background: #333; }
         .history-text { flex: 1; font-size: 16px; }
-        .delete-all { text-align: center; color: #3ea6ff; padding: 15px; font-size: 14px; cursor: pointer; font-weight: 500; }
+        .delete-all { text-align: center; color: #3ea6ff; padding: 15px; font-size: 14px; cursor: pointer; }
 
-        /* FEED Y CARDS */
+        /* FEED DE CARÁTULAS ÚNICAS */
         .feed { padding: 10px 12px; display: flex; flex-direction: column; gap: 20px; }
         .card { border-radius: 12px; overflow: hidden; cursor: pointer; }
         .card-thumb { width: 100%; height: 200px; border-radius: 12px; background-size: cover; background-position: center; background-color: #222; }
@@ -42,10 +40,9 @@
         .card-title { font-size: 16px; font-weight: 500; margin: 0; }
 
         /* NAV INFERIOR */
-        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--bg-black); height: 65px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); font-size: 10px; cursor: pointer; gap: 4px; }
-        .nav-item.active { color: white; }
-        .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--bg-black); height: 65px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-gray); font-size: 10px; cursor: pointer; text-decoration: none; }
+        .nav-item svg { width: 24px; height: 24px; fill: currentColor; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -54,7 +51,7 @@
         <div class="logo-section"><span>My</span>Tube</div>
         <div class="fake-search" onclick="openSearch()">
             Buscar en YouTube...
-            <svg class="yt-icon" style="width:18px; fill:gray" viewBox="0 0 24 24"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
+            <svg class="yt-icon" style="width:16px; fill:gray" viewBox="0 0 24 24"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
         </div>
     </div>
 
@@ -63,10 +60,8 @@
             <span class="back-btn" onclick="closeSearch()">←</span>
             <div class="search-input-container">
                 <input type="text" id="realSearch" placeholder="Buscar..." onkeypress="if(event.key === 'Enter') ejecutarBusqueda(this.value)">
-                <div class="search-action-icons">
-                    <span style="cursor:pointer; color:#aaa; font-size:18px;" onclick="document.getElementById('realSearch').value = ''">✕</span>
-                    <svg class="yt-icon" style="fill:gray" viewBox="0 0 24 24" onclick="ejecutarBusqueda(document.getElementById('realSearch').value)"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
-                </div>
+                <span style="cursor:pointer; color:#aaa; margin-right:10px" onclick="document.getElementById('realSearch').value = ''">✕</span>
+                <svg class="yt-icon" style="fill:gray" viewBox="0 0 24 24" onclick="ejecutarBusqueda(document.getElementById('realSearch').value)"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
             </div>
         </div>
         <div class="history-list" id="history-display"></div>
@@ -91,13 +86,6 @@
     </div>
 
     <script>
-        const imagenesSagradas = {
-            'todo': 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=500',
-            'música': 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500',
-            'vallenato': 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500',
-            'default': 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=500'
-        };
-
         function openSearch() {
             document.getElementById('search-overlay').style.display = 'flex';
             document.getElementById('realSearch').focus();
@@ -112,9 +100,13 @@
             if (!t) return;
             let historial = JSON.parse(localStorage.getItem('yt_history')) || [];
             historial = historial.filter(i => i.texto !== t);
-            const img = imagenesSagradas[t.toLowerCase()] || imagenesSagradas['default'];
-            historial.unshift({ texto: t, fecha: new Date().toLocaleDateString(), img: img });
-            localStorage.setItem('yt_history', JSON.stringify(historial.slice(0,15)));
+            
+            // EL TRUCO: Usamos una semilla aleatoria para que cada imagen sea única
+            const seed = Math.floor(Math.random() * 1000);
+            const img = `https://picsum.photos/seed/${seed}/500/300`;
+            
+            historial.unshift({ texto: t, img: img });
+            localStorage.setItem('yt_history', JSON.stringify(historial.slice(0,20)));
             window.location.href = "https://m.youtube.com/results?search_query=" + encodeURIComponent(t);
         }
 
@@ -125,7 +117,7 @@
             historial.forEach(item => {
                 container.innerHTML += `
                     <div class="history-item" onclick="ejecutarBusqueda('${item.texto}')">
-                        <svg class="history-icon" viewBox="0 0 24 24"><path d="M21,19.1l-5.1-5.1c1.2-1.5,2-3.5,2-5.6c0-4.9-4-8.9-8.9-8.9S0.1,3.5,0.1,8.4s4,8.9,8.9,8.9c2.1,0,4.1-0.7,5.6-2l5.1,5.1 L21,19.1z M8.9,15.3c-3.8,0-6.9-3.1-6.9-6.9s3.1-6.9,6.9-6.9s6.9,3.1,6.9,6.9S12.7,15.3,8.9,15.3z"></path></svg>
+                        <svg class="history-icon" viewBox="0 0 24 24"><path d="M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z"></path></svg>
                         <span class="history-text">${item.texto}</span>
                         <span style="opacity:0.4">↗</span>
                     </div>
@@ -134,17 +126,16 @@
         }
 
         function borrarTodo() {
-            if(confirm("¿Borrar todo el historial?")) {
+            if(confirm("¿Borrar historial?")) {
                 localStorage.removeItem('yt_history');
-                renderHistory();
-                mostrarFeed();
+                location.reload();
             }
         }
 
         function mostrarFeed() {
             const feed = document.getElementById('feed');
             const historial = JSON.parse(localStorage.getItem('yt_history')) || [];
-            feed.innerHTML = historial.length ? '' : '<p style="text-align:center;color:#444;margin-top:50px">Tu historial aparecerá aquí.</p>';
+            feed.innerHTML = historial.length ? '' : '<p style="text-align:center;color:#444;margin-top:50px">Busca algo para ver carátulas únicas.</p>';
             historial.forEach(item => {
                 feed.innerHTML += `
                     <div class="card" onclick="ejecutarBusqueda('${item.texto}')">
